@@ -239,8 +239,8 @@
 /* Transcript Specific Styling */
 #yt-summarizer-root #transcript-content {
   font-family: "Roboto Mono", "Courier New", monospace;
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.4;
   white-space: normal; /* Changed from pre-wrap for better formatting */
   word-wrap: break-word;
 }

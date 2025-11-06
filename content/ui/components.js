@@ -1,17 +1,10 @@
-// content/ui/components.js
-
-import { timestampToSeconds } from "../extraction/transcript.js";
-
 export const initializeUI = (container) => {
-  // FIX: This is a more comprehensive check for YouTube's dark mode
+  // Set initial theme based on YouTube's theme or system preference
   const isDarkMode =
     document.documentElement.hasAttribute("dark") ||
-    document.documentElement.getAttribute("dark") === "true" ||
-    document.body.classList.contains("dark-mode");
-
-  if (isDarkMode) {
-    container.classList.add("dark-mode");
-  }
+    document.body.classList.contains("dark") ||
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (isDarkMode) container.classList.add("dark-mode");
 };
 
 export const showSummary = (summaryText) => {
@@ -31,18 +24,30 @@ export const showSummary = (summaryText) => {
 export const showTranscript = (transcriptArray) => {
   const transcriptContent = document.getElementById("transcript-content");
 
-  const formattedHtml = transcriptArray
+  // --- UI Adjustment: Add Header ---
+  const transcriptHeader = "<strong>✏️ Transcript</strong><br>";
+
+  // Format with clickable timestamps - THIS IS THE KEY PART FOR TIMESTAMP SYNC
+  const formattedTranscriptLines = transcriptArray
     .map((entry) => {
       const [timestamp, text] = Object.entries(entry)[0];
       const seconds = timestampToSeconds(timestamp);
-      return `<span class="timestamp" data-time="${seconds}" style="cursor: pointer; color: #065fd4; font-weight: 500;">${timestamp}</span> ${text}`;
+
+      // UI Adjustment: Use helper function to ensure MM:SS format for display
+      const displayTimestamp = secondsToFormattedTimestamp(seconds);
+
+      return `<span class="timestamp" data-time="${seconds}" style="cursor: pointer; color: #065fd4; font-weight: 500;">${displayTimestamp}</span> ${text}`;
     })
     .join("<br>");
+
+  const formattedHtml = transcriptHeader + formattedTranscriptLines;
+  // ---------------------------------
 
   transcriptContent.innerHTML = formattedHtml;
   transcriptContent.hidden = false;
   transcriptContent.style.display = "block";
 
+  // Add click listeners to timestamps - THIS ENABLES THE SYNC
   transcriptContent.querySelectorAll(".timestamp").forEach((span) => {
     span.addEventListener("click", () => {
       const time = parseFloat(span.getAttribute("data-time"));
@@ -62,4 +67,25 @@ export const showTranscript = (transcriptArray) => {
 
   document.getElementById("copy-btn").hidden = false;
   document.getElementById("error").hidden = true;
+};
+
+// Helper function for timestamp conversion if not available globally
+const timestampToSeconds = (timestamp) => {
+  const parts = timestamp.split(":").map(Number);
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return parts[0] * 3600 + parts[1] * 60 + parts[2];
+};
+
+// NEW HELPER FUNCTION to format total seconds into a zero-padded MM:SS or H:MM:SS string
+const secondsToFormattedTimestamp = (totalSeconds) => {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+
+  const pad = (num) => String(num).padStart(2, "0");
+
+  if (hours > 0) {
+    return `${hours}:${pad(minutes)}:${pad(seconds)}`;
+  }
+  return `${pad(minutes)}:${pad(seconds)}`;
 };
