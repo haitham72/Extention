@@ -78,7 +78,7 @@ def store_video_data():
     video_id = data.get('video_id', 'unknown_id')
 
     # Sanitize the title for use as a filename
-    safe_title = re.sub(r'[^\w\s-]', '', video_title) # Remove special characters
+    safe_title = re.sub(r'[^\w\s!-]', '', video_title) # Remove special characters
     safe_title = re.sub(r'\s+', '_', safe_title)      # Replace spaces with underscores
     safe_title = safe_title[:150].strip('_')           # Trim to 50 chars and remove trailing _
 
@@ -89,7 +89,7 @@ def store_video_data():
     # Construct the final filename: TITLE_ID_TIMESTAMP.json
     timestamp_str = datetime.now().strftime('%Y%m%d_%H%M%S')
     # Use only the title for the filename (as requested), and ID as a unique suffix
-    filename = f"{safe_title}_{video_id}_{timestamp_str}.json"
+    filename = f"{safe_title}_-_{video_id}_-_{timestamp_str}.json"
     
     # Set your desired save location here
     script_dir = os.path.dirname(os.path.abspath(__file__))

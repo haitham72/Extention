@@ -1,0 +1,15 @@
+{
+  "name": "super-youtube-summarizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild sl-summarizer/youtube-side-extention-v4/content/moduleEntryPoint.js --bundle --outfile=sl-summarizer/youtube-side-extention-v4/dist/bundle.js --platform=browser --format=iife --sourcemap"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  }
+}
