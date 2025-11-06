@@ -8,7 +8,13 @@ export const initializeUI = (container) => {
 };
 
 export const showSummary = (summaryText) => {
-  const formattedHtml = summaryText
+  // Remove multiple consecutive newlines and trim extra spaces
+  const cleanedText = summaryText
+    .replace(/\n{3,}/g, "\n\n") // Replace 3+ newlines with just 2
+    .replace(/[ \t]+/g, " ") // Replace multiple spaces/tabs with single space
+    .trim();
+  
+  const formattedHtml = cleanedText
     .replace(/\n/g, "<br>")
     .replace(/•/g, "<br>•")
     .replace(/Key Insights:/i, "<strong>Key Insights:</strong>");
@@ -36,7 +42,8 @@ export const showTranscript = (transcriptArray) => {
       // UI Adjustment: Use helper function to ensure MM:SS format for display
       const displayTimestamp = secondsToFormattedTimestamp(seconds);
 
-      return `<span class="timestamp" data-time="${seconds}" style="cursor: pointer; color: #065fd4; font-weight: 500;">${displayTimestamp}</span> ${text}`;
+      // Make the transcript text bolder
+      return `<span class="timestamp" data-time="${seconds}" style="cursor: pointer; color: #065fd4; font-weight: 500;">${displayTimestamp}</span> <span class="transcript-text">${text}</span>`;
     })
     .join("<br>");
 

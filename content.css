@@ -220,20 +220,20 @@
   border-radius: 8px;
   padding: 14px;
   font-size: 17px; /* Increased from 14px */
-  line-height: 1.6; /* Increased from 1.6 */
+  line-height: 1.5; /* Reduced from 1.6 to reduce spacing */
   max-height: 450px;
   overflow-y: auto;
   white-space: pre-wrap; /* Preserves newlines in transcript and summary output */
 }
 #yt-summarizer-root .content-box p {
-  margin-bottom: 12px;
+  margin-bottom: 8px; /* Reduced from 12px */
 }
 #yt-summarizer-root .content-box ul {
   list-style-position: inside;
   padding-left: 8px;
 }
 #yt-summarizer-root .content-box li {
-  margin-bottom: 8px;
+  margin-bottom: 6px; /* Reduced from 8px */
 }
 
 #yt-summarizer-root .content-box h3 {
@@ -251,6 +251,11 @@
   line-height: 1.4;
   white-space: normal; /* Changed from pre-wrap for better formatting */
   word-wrap: break-word;
+}
+
+/* Make transcript text bolder */
+#yt-summarizer-root #transcript-content .transcript-text {
+  font-weight: 600;
 }
 
 /* Timestamp styling */
