@@ -1,116 +1,61 @@
+# backend.py (Final Vercel-compatible code - NO JSON SAVING)
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from youtube_transcript_api import YouTubeTranscriptApi
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
-import json
-from datetime import datetime
-import re
 
+# Load environment variables (for local testing, Vercel handles env vars otherwise)
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app) 
 
+# Configure Gemini API
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 @app.route('/')
 def home():
     return "YouTube Summarizer API is running!"
 
-# --- TRANSCRIPT FETCH ROUTE (Unchanged logic) ---
-@app.route('/transcript', methods=['GET'])
-def get_transcript():
-    video_id = request.args.get('video_id')
-    if not video_id:
-        return jsonify({'error': 'No video_id provided'}), 400
-    
-    try:
-        # NOTE: Using standard library function get_transcript for simplicity
-        fetched_transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        
-        # Format transcript into a single string with timestamps
-        transcript_text = "\n".join([f"[{int(item['start'] // 60):02}:{int(item['start'] % 60):02}] {item['text']}" for item in fetched_transcript])
-        
-        return jsonify({
-            'transcript': transcript_text,
-            'status': 'Transcript fetched successfully'
-        })
-        
-    except Exception as e:
-        print(f"YouTubeTranscriptApi error: {str(e)}")
-        return jsonify({'error': 'Failed to fetch transcript from API', 'details': str(e)}), 500
-
-# --- SUMMARIZE ROUTE (Unchanged) ---
+# ----------------------------------------------------------------------
+# --- THE ONLY REQUIRED ROUTE: SUMMARIZE (No caching) ------------------
+# ----------------------------------------------------------------------
 @app.route('/summarize', methods=['POST'])
 def summarize():
-    data = request.json
+    data = request.get_json()
     transcript = data.get('transcript')
-    summary_type = data.get('summary_type', 'insights')
-    
+    summary_type = data.get('summary_type', 'concise')
+    video_id = data.get('video_id') # Kept for logging/future but not used for cache
+
     if not transcript:
         return jsonify({'error': 'No transcript provided'}), 400
-
-    if summary_type == 'key_insights':
-        prompt = "You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on main ideas.\n\nTranscript: "
+    
+    # Define prompt based on summary_type
+    if summary_type == 'concise':
+        # Your concise prompt
+        prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times\n\nTranscript: \""
     elif summary_type == 'insights':
-        prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times\n\nTranscript: "
+        # Your insights prompt
+        prompt = "You are a YouTube summarizer. Generate a list (use bullet points) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on  main ideas.\n\nTranscript: \""
     elif summary_type == 'detailed':
-        prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, use proper structure and bullet points covering all main topics and supporting details.\n\nTranscript: "
+        # Your detailed prompt
+        prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, use proper structure and bullet points covering all main topics and supporting details.\n\nTranscript: \""
     else:
         return jsonify({'error': 'Invalid summary_type'}), 400
-    
+
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash-exp")
+        # Use a fast model for summarization
+        model = genai.GenerativeModel("gemini-1.5-flash") 
         response = model.generate_content(prompt + transcript)
+        
+        print(f"Summary generated successfully (type: {summary_type}, video: {video_id})")
         return jsonify({'summary': response.text})
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        print(f"Error generating summary: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
-# --- DATA STORAGE ROUTE (FIXED FILENAME LOGIC) ---
-@app.route('/store-video-data', methods=['POST'])
-def store_video_data():
-    data = request.json
-    
-    # FIX: Get the video_title. If not found, use a fallback string.
-    video_title = data.get('video_title', 'Video_Data_Unknown').strip()
-    video_id = data.get('video_id', 'unknown_id')
-
-    # Sanitize the title for use as a filename
-    safe_title = re.sub(r'[^\w\s!-]', '', video_title) # Remove special characters
-    safe_title = re.sub(r'\s+', '_', safe_title)      # Replace spaces with underscores
-    safe_title = safe_title[:150].strip('_')           # Trim to 50 chars and remove trailing _
-
-    # If the safe title is empty (e.g., if the original title was just symbols), use the ID
-    if not safe_title:
-        safe_title = video_id
-        
-    # Construct the final filename: TITLE_ID_TIMESTAMP.json
-    timestamp_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-    # Use only the title for the filename (as requested), and ID as a unique suffix
-    filename = f"{safe_title}_-_{video_id}_-_{timestamp_str}.json"
-    
-    # Set your desired save location here
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(script_dir, 'video_data_files') 
-
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
-    
-    full_path = os.path.join(data_dir, filename)
-
-    try:
-        with open(full_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
-            
-        print(f"✅ Successfully saved video data to {full_path}")
-        return jsonify({'status': 'Data stored successfully', 'filename': filename}), 200
-        
-    except Exception as e:
-        print(f"File saving error: {str(e)}")
-        return jsonify({'error': 'Failed to store data on the server', 'details': str(e)}), 500
-
+# Vercel requires this minimal setup for the app object
 if __name__ == '__main__':
-    print("Starting YouTube Summarizer API on http://127.0.0.1:5000")
-    app.run(debug=True, port=5000)
+    app.run(debug=True)

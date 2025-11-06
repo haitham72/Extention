@@ -1,19 +1,25 @@
-// content/extraction/transcript.js
+// content/extraction/transcript.js (Final Robust Scraper - REMOVED API FUNCTION)
 
 export const timestampToSeconds = (timestamp) => {
-  const parts = timestamp.split(":").map(Number);
-  if (parts.length === 2) return parts[0] * 60 + parts[1];
-  return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  const parts = timestamp.split(":").map(Number).reverse();
+  let seconds = 0;
+  seconds += parts[0] || 0;
+  seconds += (parts[1] || 0) * 60;
+  seconds += (parts[2] || 0) * 3600;
+  return seconds;
 };
 
 export const secondsToTimestamp = (seconds) => {
   const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
+  const secs = Math.round(seconds % 60);
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 };
 
+/**
+ * FINAL ROBUST CLIENT-SIDE SCRAPER
+ */
 export const extractTranscriptClientSide = async (videoId) => {
-  console.log("Starting fast client-side transcript extraction...");
+  console.log("Starting final robust client-side transcript extraction...");
   const video = document.querySelector("video");
   if (!video) throw new Error("Video element not found");
 
@@ -25,136 +31,107 @@ export const extractTranscriptClientSide = async (videoId) => {
   let segments = document.querySelectorAll("ytd-transcript-segment-renderer");
 
   if (segments.length === 0) {
-    let opened = false;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const buttons = Array.from(document.querySelectorAll("button"));
+    console.log("Transcript panel not open. Trying to open it...");
 
-    const transcriptButton = buttons.find(
-      (btn) =>
-        btn.getAttribute("aria-label") === "Transcript" ||
-        btn.textContent?.trim().toLowerCase() === "transcript"
-    );
-    if (transcriptButton) {
-      transcriptButton.click();
-      shouldClose = true;
-      for (let i = 0; i < 15; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        segments = document.querySelectorAll("ytd-transcript-segment-renderer");
-        if (segments.length > 0) {
-          opened = true;
-          break;
-        }
+    try {
+      // 1. Click the "More" button to expand the description box
+      const moreDescriptionButton =
+        document.querySelector("#description #expand") ||
+        document.querySelector("#expand-button") ||
+        Array.from(
+          document.querySelectorAll("yt-formatted-string.more-button")
+        ).find((btn) => btn.textContent?.trim().toLowerCase() === "more");
+
+      if (moreDescriptionButton) {
+        console.log("Clicking description 'More' button...");
+        moreDescriptionButton.click();
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
-    }
 
-    if (!opened) {
-      const moreButton = buttons.find((btn) =>
-        btn.getAttribute("aria-label")?.includes("More actions")
+      // 2. Aggressively find and click the "Show transcript" button
+      const allButtons = Array.from(
+        document.querySelectorAll(
+          "ytd-button-renderer a, yt-button-shape button, button[aria-label], ytd-menu-service-item-renderer yt-formatted-string"
+        )
       );
-      if (moreButton) {
-        moreButton.click();
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const menuButtons = Array.from(
-          document.querySelectorAll("button, ytd-menu-service-item-renderer")
+
+      const transcriptButton = allButtons.find((btn) => {
+        const text = btn.textContent?.trim().toLowerCase();
+        const label = btn.getAttribute("aria-label")?.toLowerCase();
+
+        return (
+          text === "show transcript" ||
+          text === "show full transcript" ||
+          (label &&
+            (label.includes("show") || label.includes("open")) &&
+            label.includes("transcript"))
         );
-        const transcriptOption = menuButtons.find((btn) =>
-          btn.textContent?.toLowerCase().includes("show transcript")
-        );
-        if (transcriptOption) {
-          transcriptOption.click();
-          shouldClose = true;
-          for (let i = 0; i < 15; i++) {
-            await new Promise((resolve) => setTimeout(resolve, 300));
-            segments = document.querySelectorAll(
-              "ytd-transcript-segment-renderer"
-            );
-            if (segments.length > 0) {
-              opened = true;
-              break;
-            }
-          }
-        }
-      }
-    }
+      });
 
-    if (!opened && segments.length === 0) {
-      for (let i = 0; i < 20; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        segments = document.querySelectorAll("ytd-transcript-segment-renderer");
-        if (segments.length > 0) break;
-      }
-    }
-
-    if (segments.length === 0)
-      throw new Error("No transcript available for this video.");
-  }
-
-  const transcriptContainer =
-    document.querySelector("#segments-container") ||
-    document.querySelector(
-      "ytd-transcript-segment-list-renderer #segments-container"
-    ) ||
-    document.querySelector('[id="segments-container"]') ||
-    document.querySelector(
-      'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-searchable-transcript"] #content'
-    );
-
-  if (transcriptContainer) {
-    let previousCount = segments.length;
-    let stableCount = 0;
-    for (let i = 0; i < 60; i++) {
-      // Max attempts
-      transcriptContainer.scrollTop = transcriptContainer.scrollHeight;
-      await new Promise((resolve) => setTimeout(resolve, 150));
-      segments = document.querySelectorAll("ytd-transcript-segment-renderer");
-      if (segments.length === previousCount) {
-        stableCount++;
-        if (stableCount >= 4) break;
+      if (transcriptButton) {
+        console.log("Found 'Show transcript' button. Clicking...");
+        transcriptButton.click();
+        shouldClose = true;
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       } else {
-        stableCount = 0;
-        previousCount = segments.length;
+        console.warn(
+          "Could not find 'Show transcript' button via aggressive search."
+        );
       }
+
+      segments = document.querySelectorAll("ytd-transcript-segment-renderer");
+    } catch (e) {
+      console.error("Error trying to open transcript panel:", e);
+    }
+
+    if (segments.length === 0) {
+      throw new Error(
+        "Transcript not available on YouTube page (scraper failed)."
+      );
     }
   }
 
-  const groups = {};
-  Array.from(segments).forEach((seg) => {
-    const time =
-      seg.querySelector(".segment-timestamp")?.textContent.trim() || "0:00";
-    const text = seg.querySelector(".segment-text")?.textContent.trim() || "";
-    if (!text) return;
-    const seconds = timestampToSeconds(time);
-    const group = Math.floor(seconds / groupBy) * groupBy;
-    if (!groups[group]) groups[group] = [];
-    groups[group].push(text);
+  // --- Parsing Logic ---
+  const rawTranscriptArray = Array.from(segments)
+    .map((seg) => {
+      const textElement = seg.querySelector(".segment-text");
+      const timeElement = seg.querySelector(".segment-timestamp");
+      if (textElement && timeElement) {
+        return {
+          timestamp: timeElement.textContent.trim(),
+          text: textElement.textContent.trim().replace(/\n/g, " "),
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  const groupedTranscriptMap = new Map();
+  let transcriptText = "";
+
+  rawTranscriptArray.forEach((item) => {
+    const seconds = timestampToSeconds(item.timestamp);
+    let groupKeySeconds = Math.floor(seconds / groupBy) * groupBy;
+    const groupKey = secondsToTimestamp(groupKeySeconds);
+
+    if (!groupedTranscriptMap.has(groupKey)) {
+      groupedTranscriptMap.set(groupKey, []);
+    }
+    groupedTranscriptMap.get(groupKey).push(item.text);
   });
 
-  if (Object.keys(groups).length === 0)
-    throw new Error(
-      `Found ${segments.length} segments but couldn't extract text.`
-    );
+  const transcriptArray = [];
+  groupedTranscriptMap.forEach((texts, timestamp) => {
+    const fullText = texts.join(" ");
+    transcriptArray.push({ [timestamp]: fullText });
+    transcriptText += `[${timestamp}] ${fullText}\n`;
+  });
 
-  const transcriptArray = Object.keys(groups)
-    .sort((a, b) => Number(a) - Number(b))
-    .map((key) => {
-      const time = secondsToTimestamp(Number(key));
-      return { [time]: groups[key].join(" ") };
-    });
-
-  const transcriptText = Object.keys(groups)
-    .sort((a, b) => Number(a) - Number(b))
-    .map((key) => {
-      const time = secondsToTimestamp(Number(key));
-      return `[${time}] ${groups[key].join(" ")}`;
-    })
-    .join("\n");
-
+  // Closing logic
   if (shouldClose) {
-    const allButtons = Array.from(document.querySelectorAll("button"));
-    const closeButton = allButtons.find((btn) => {
-      const label = btn.getAttribute("aria-label")?.toLowerCase() || "";
-      return label.includes("close") && label.includes("transcript");
-    });
+    const closeButton = document.querySelector(
+      "ytd-engagement-panel-section-list-renderer #dismiss-button, ytd-transcript-renderer #dismiss-button"
+    );
     if (closeButton) closeButton.click();
   }
 
@@ -162,38 +139,5 @@ export const extractTranscriptClientSide = async (videoId) => {
     "Client-side extraction successful, segments:",
     transcriptArray.length
   );
-  return { array: transcriptArray, text: transcriptText };
-};
-
-export const getTranscriptViaAPI = async (videoId) => {
-  console.log("Fetching transcript via API...");
-  const url = `${BACKEND_URL}/transcript?video_id=${videoId}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.error || `API request failed with status ${response.status}`
-    );
-  }
-  const data = await response.json();
-  console.log("API transcript received");
-
-  const lines = data.transcript.split("\n");
-  const transcriptArray = lines
-    .map((line) => {
-      const match = line.match(/^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s+(.+)$/);
-      if (match) return { [match[1]]: match[2] };
-      return null;
-    })
-    .filter(Boolean);
-
-  const transcriptText = lines
-    .filter((line) => line.trim())
-    .map((line) => {
-      const match = line.match(/^\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?\s+(.+)$/);
-      return match ? `[${match[1]}] ${match[2]}` : line;
-    })
-    .join("\n");
-
   return { array: transcriptArray, text: transcriptText };
 };

@@ -8,6 +8,8 @@ __pycache__/
 # Virtual environments
 .env
 Yout/
+content/
+ui.html
 
 # VS Code
 .vscode/
@@ -41,3 +43,8 @@ dist/
 
 # IDE files
 .idea/
+package.json
+node_modules
+package-lock.json
+background.js
+manifest.json
