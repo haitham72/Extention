@@ -252,7 +252,7 @@
   font-family: "Roboto Mono", monospace;
   display: inline-block;
   min-width: 50px;
-  margin-right: 8px;
+  margin-right: 2px;
 }
 
 #yt-summarizer-root.dark-mode #transcript-content .timestamp {
