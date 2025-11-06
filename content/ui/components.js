@@ -25,7 +25,7 @@ export const showTranscript = (transcriptArray) => {
   const transcriptContent = document.getElementById("transcript-content");
 
   // --- UI Adjustment: Add Header ---
-  const transcriptHeader = "<h3>✏️ Transcript\n</h3>";
+  const transcriptHeader = "<h3>✏️ Transcript</h3>";
 
   // Format with clickable timestamps - THIS IS THE KEY PART FOR TIMESTAMP SYNC
   const formattedTranscriptLines = transcriptArray

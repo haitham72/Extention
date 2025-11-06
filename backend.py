@@ -55,11 +55,47 @@ def summarize():
     summary_type = str(summary_type).strip().lower() if summary_type else 'insights'
 
     if summary_type == 'insights':
-        prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times, use the html tags to make the summary more readable like <h3>Summary</h3>\n\nTranscript: "
+        prompt = """You are a YouTube summarizer. Generate a single concise paragraph (under 20 words) summarizing this transcript. 
+
+            The main idea to look for is: how valuable is this video? Is it clickbait or does it provide superb value to the user's time?
+
+            IMPORTANT FORMATTING RULES:
+            - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
+            - Start with: <h3>Summary</h3>
+            - Write the paragraph in plain text (no bold, no markdown)
+            - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+
+            Transcript: """
     elif summary_type == 'concise':
-        prompt = "You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on main ideas. use the html tags to make the summary more readable like <h3>Key Insights</h3>\n\nTranscript: "
+        prompt = """You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) from this transcript.
+
+            IMPORTANT FORMATTING RULES:
+            - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
+            - Start with: <h3>Key Insights</h3>
+            - Use <ul> and <li> tags for bullet points, like this:
+            <ul>
+            <li>📌 First insight here</li>
+            <li>📌 Second insight here</li>
+            </ul>
+            - Use emojis at the start of each point
+            - Focus on main ideas
+            - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+
+            Transcript: """
     elif summary_type == 'detailed':
-        prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, Use emojis at the start of each point and use proper structure and bullet points covering all main topics and supporting details, use the html tags to make the summary more readable like <h3>Detailed Summary</h3>\n\nTranscript: "
+        prompt = """You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript.
+
+            IMPORTANT FORMATTING RULES:
+            - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
+            - Start with: <h3>Detailed Summary</h3>
+            - Use <p> tags for paragraphs
+            - Use <ul> and <li> tags for bullet points
+            - Use <strong> tags for emphasis (not markdown **)
+            - Use emojis at the start of key points
+            - Use proper structure with bullet points covering all main topics and supporting details
+            - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+
+            Transcript: """
     else:
         return jsonify({'error': 'Invalid summary_type'}), 400
     

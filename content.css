@@ -236,6 +236,14 @@
   margin-bottom: 8px;
 }
 
+#yt-summarizer-root .content-box h3 {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 12px;
+  margin-top: 0;
+  color: var(--text-primary);
+}
+
 /* Transcript Specific Styling */
 #yt-summarizer-root #transcript-content {
   font-family: "Roboto Mono", "Courier New", monospace;
