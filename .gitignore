@@ -41,3 +41,6 @@ dist/
 
 # IDE files
 .idea/
+node_modules/
+video_data_files/
+
