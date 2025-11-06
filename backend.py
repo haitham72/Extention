@@ -53,11 +53,11 @@ def summarize():
         return jsonify({'error': 'No transcript provided'}), 400
 
     if summary_type == 'insights':
-        prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times\n\nTranscript: "
+        prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times, use the html tags to make the summary more readable like <h3>Summary</h3>\n\nTranscript: "
     elif summary_type == 'concise':
-        prompt = "You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on main ideas.\n\nTranscript: "
+        prompt = "You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on main ideas. use the html tags to make the summary more readable like <h3>Key Insights</h3>\n\nTranscript: "
     elif summary_type == 'detailed':
-        prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, use proper structure and bullet points covering all main topics and supporting details.\n\nTranscript: "
+        prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, Use emojis at the start of each point and use proper structure and bullet points covering all main topics and supporting details, use the html tags to make the summary more readable like <h3>Detailed Summary</h3>\n\nTranscript: "
     else:
         return jsonify({'error': 'Invalid summary_type'}), 400
     
