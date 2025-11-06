@@ -52,9 +52,9 @@ def summarize():
     if not transcript:
         return jsonify({'error': 'No transcript provided'}), 400
 
-    if summary_type == 'key_insights':
+    if summary_type == 'insights':
         prompt = "You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on main ideas.\n\nTranscript: "
-    elif summary_type == 'insights':
+    elif summary_type == 'key_insights':
         prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times\n\nTranscript: "
     elif summary_type == 'detailed':
         prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, use proper structure and bullet points covering all main topics and supporting details.\n\nTranscript: "
@@ -62,7 +62,7 @@ def summarize():
         return jsonify({'error': 'Invalid summary_type'}), 400
     
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash-exp")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(prompt + transcript)
         return jsonify({'summary': response.text})
     except Exception as e:

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild sl-summarizer/youtube-side-extention-v4/content/moduleEntryPoint.js --bundle --outfile=sl-summarizer/youtube-side-extention-v4/dist/bundle.js --platform=browser --format=iife --sourcemap"
+    "build": "esbuild content/moduleEntryPoint.js --bundle --outfile=dist/bundle.js --platform=browser --format=iife --sourcemap"
   },
   "keywords": [],
   "author": "",
