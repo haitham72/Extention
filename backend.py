@@ -63,9 +63,11 @@ def summarize():
             - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
             - Start with: <h3>Summary</h3>
             - Write the paragraph in a <p> tag (no bold, no markdown)
-            - DO NOT use <br> tags or create excessive spacing
-            - Keep spacing minimal and compact
-            - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+            - DO NOT add any newlines, line breaks, or spacing between tags
+            - Write all HTML on continuous lines without breaks
+            - Keep the output compact with no blank lines
+            - If the transcript is in Arabic, write the summary in Arabic
+            - If the transcript is in English, write the summary in English
 
             Transcript: """
     elif summary_type == 'concise':
@@ -74,16 +76,14 @@ def summarize():
             IMPORTANT FORMATTING RULES:
             - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
             - Start with: <h3>Key Insights</h3>
-            - Use <ul> and <li> tags for bullet points, like this:
-            <ul>
-            <li>First insight here</li>
-            <li>Second insight here</li>
-            </ul>
+            - Use <ul> and <li> tags for bullet points
+            - Write the HTML compactly: <ul><li>First point</li><li>Second point</li></ul>
+            - DO NOT add newlines between <li> tags
             - Use emojis at the start of each point
             - Focus on main ideas
-            - DO NOT use <br> tags or create excessive spacing between list items
-            - Keep spacing minimal and compact
-            - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+            - Keep all HTML on minimal lines with no blank spaces between tags
+            - If the transcript is in Arabic, write the bullet points in Arabic
+            - If the transcript is in English, write the bullet points in English
 
             Transcript: """
     elif summary_type == 'detailed':
@@ -92,17 +92,18 @@ def summarize():
         IMPORTANT FORMATTING RULES:
         - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
         - Start with: <h3>Detailed Summary</h3>
-        - Use <p> tags for paragraphs (NOT multiple <br> tags)
-        - Use <ul> and <li> tags for bullet points
+        - Use <p> tags for paragraphs: <p>Paragraph text here</p>
+        - Use <ul> and <li> tags for bullet points: <ul><li>Point</li><li>Point</li></ul>
         - Use <strong> tags for emphasis (not markdown **)
         - Use emojis at the start of key points
-        - Use proper structure with bullet points covering all main topics and supporting details
-        - DO NOT use excessive <br> tags or create large gaps between sections
-        - Keep spacing minimal - use <p> tags to separate paragraphs, not multiple line breaks
-        - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+        - DO NOT add newlines between tags - write compactly
+        - Separate paragraphs with </p><p> NOT with multiple line breaks
+        - Keep all HTML compact with minimal whitespace
+        - If the transcript is in Arabic, write the entire summary in Arabic
+        - If the transcript is in English, write the entire summary in English
 
         Transcript: """
-
+        
     else:
         return jsonify({'error': 'Invalid summary_type'}), 400
     
