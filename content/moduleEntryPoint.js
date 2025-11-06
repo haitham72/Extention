@@ -4,7 +4,6 @@ import * as Extraction from "./extraction/transcript.js";
 import * as Metadata from "./extraction/metadata.js";
 import {
   sendToBackend,
-  getTranscriptFromAPI,
   getSummaryFromAPI,
 } from "./backend/api.js";
 import { initializeUI, showSummary, showTranscript } from "./ui/components.js";
@@ -61,48 +60,44 @@ async function getTranscript(videoId, forceAPI = false) {
       transcriptData = await Extraction.extractTranscriptClientSide(videoId);
     } catch (clientError) {
       console.warn(
-        "Client-side extraction failed, falling back to API:",
+        "Client-side extraction failed:",
         clientError.message
       );
-      // Don't throw, just proceed to API fallback
     }
 
-    // 2. If client-side fails (or returns empty), use API
+    // 2. If client-side fails (or returns empty), show error — no backend fallback
     if (
       !transcriptData ||
       !transcriptData.array ||
       transcriptData.array.length === 0
     ) {
-      const apiTranscriptText = await getTranscriptFromAPI(videoId);
-      transcriptData = {
-        array: extractTranscriptArrayFromText(apiTranscriptText),
-        text: apiTranscriptText,
-      };
+      throw new Error("No transcript available (client-side extraction failed).");
     }
 
-    // 3. Set cache and send to backend
+    // 3. Set cache and optionally send to backend storage
     cachedTranscriptArray = transcriptData.array;
     cachedTranscriptText = transcriptData.text;
 
-    // FIX: Pass cachedMetadata to sendToBackend
-    sendToBackend(videoId, transcriptData, cachedMetadata).catch((e) =>
-      console.warn("Background sendToBackend failed:", e)
-    );
+    // Optional: disable server storage on Vercel for now
+    const ENABLE_SERVER_STORAGE = false;
+    if (ENABLE_SERVER_STORAGE) {
+      sendToBackend(videoId, transcriptData, cachedMetadata).catch((e) =>
+        console.warn("Background sendToBackend failed:", e)
+      );
+    }
 
-    // FIX: Return the full data object
     return transcriptData;
   } catch (e) {
     console.error("getTranscript error:", e);
     document.getElementById("error").textContent =
       e.message || "Failed to get transcript.";
     document.getElementById("error").hidden = false;
-    return { array: null, text: null }; // Return null object on failure
+    return { array: null, text: null };
   } finally {
     isExtracting = false;
     document.getElementById("loading").hidden = true;
   }
 }
-
 async function generateSummary(summaryType) {
   if (isSummarizing) return;
 

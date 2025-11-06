@@ -11,5 +11,8 @@
   "description": "",
   "devDependencies": {
     "esbuild": "^0.25.12"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0"
   }
 }

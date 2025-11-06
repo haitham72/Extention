@@ -43,4 +43,6 @@ dist/
 .idea/
 node_modules/
 video_data_files/
+node_modules/
+yout/
 
