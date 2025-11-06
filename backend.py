@@ -43,7 +43,7 @@ def get_transcript():
         return jsonify({'error': 'Failed to fetch transcript from API', 'details': str(e)}), 500
 
 # --- SUMMARIZE ROUTE (Unchanged) ---
-@app.route('/summarize', methods=['POST'])
+@app.route('/api/summarize', methods=['POST'])
 def summarize():
     data = request.json
     transcript = data.get('transcript')
@@ -69,7 +69,7 @@ def summarize():
         return jsonify({'error': str(e)}), 400
 
 # --- DATA STORAGE ROUTE (FIXED FILENAME LOGIC) ---
-@app.route('/store-video-data', methods=['POST'])
+@app.route('/api/store-video-data', methods=['POST'])
 def store_video_data():
     data = request.json
     
