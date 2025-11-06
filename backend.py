@@ -61,12 +61,12 @@ def summarize():
 
             IMPORTANT FORMATTING RULES:
             - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
-            - Start with: <h3>Summary</h3>
+            - Start with: <h3>Summary</h3>, never start with <p>, never end with </p>, never start with # tags markdowns
             - Write the paragraph in a <p> tag (no bold, no markdown)
             - DO NOT add any newlines, line breaks, or spacing between tags
             - Write all HTML on continuous lines without breaks
             - Keep the output compact with no blank lines
-            - If the transcript is in Arabic, write the summary in Arabic
+            - If the transcript is in Arabic, write the summary in Arabic and the bullet points in Arabic.
             - If the transcript is in English, write the summary in English
 
             Transcript: """
@@ -82,7 +82,7 @@ def summarize():
             - Use emojis at the start of each point
             - Focus on main ideas
             - Keep all HTML on minimal lines with no blank spaces between tags
-            - If the transcript is in Arabic, write the bullet points in Arabic
+            - If the transcript is in Arabic, write the bullet points in Arabic and the entire summaary in arabic.
             - If the transcript is in English, write the bullet points in English
 
             Transcript: """
@@ -99,7 +99,7 @@ def summarize():
         - DO NOT add newlines between tags - write compactly
         - Separate paragraphs with </p><p> NOT with multiple line breaks
         - Keep all HTML compact with minimal whitespace
-        - If the transcript is in Arabic, write the entire summary in Arabic
+        - If the transcript is in Arabic, write the entire summary in Arabic and the bullet points in Arabic.
         - If the transcript is in English, write the entire summary in English
 
         Transcript: """
