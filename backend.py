@@ -62,7 +62,9 @@ def summarize():
             IMPORTANT FORMATTING RULES:
             - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
             - Start with: <h3>Summary</h3>
-            - Write the paragraph in plain text (no bold, no markdown)
+            - Write the paragraph in a <p> tag (no bold, no markdown)
+            - DO NOT use <br> tags or create excessive spacing
+            - Keep spacing minimal and compact
             - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
 
             Transcript: """
@@ -74,28 +76,33 @@ def summarize():
             - Start with: <h3>Key Insights</h3>
             - Use <ul> and <li> tags for bullet points, like this:
             <ul>
-            <li>📌 First insight here</li>
-            <li>📌 Second insight here</li>
+            <li>First insight here</li>
+            <li>Second insight here</li>
             </ul>
             - Use emojis at the start of each point
             - Focus on main ideas
+            - DO NOT use <br> tags or create excessive spacing between list items
+            - Keep spacing minimal and compact
             - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
 
             Transcript: """
     elif summary_type == 'detailed':
         prompt = """You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript.
 
-            IMPORTANT FORMATTING RULES:
-            - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
-            - Start with: <h3>Detailed Summary</h3>
-            - Use <p> tags for paragraphs
-            - Use <ul> and <li> tags for bullet points
-            - Use <strong> tags for emphasis (not markdown **)
-            - Use emojis at the start of key points
-            - Use proper structure with bullet points covering all main topics and supporting details
-            - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
+        IMPORTANT FORMATTING RULES:
+        - Use ONLY HTML tags, NO markdown syntax (no **, no ###, no ```)
+        - Start with: <h3>Detailed Summary</h3>
+        - Use <p> tags for paragraphs (NOT multiple <br> tags)
+        - Use <ul> and <li> tags for bullet points
+        - Use <strong> tags for emphasis (not markdown **)
+        - Use emojis at the start of key points
+        - Use proper structure with bullet points covering all main topics and supporting details
+        - DO NOT use excessive <br> tags or create large gaps between sections
+        - Keep spacing minimal - use <p> tags to separate paragraphs, not multiple line breaks
+        - Do NOT use markdown bold (**text**), markdown headers (###), or code blocks (```)
 
-            Transcript: """
+        Transcript: """
+
     else:
         return jsonify({'error': 'Invalid summary_type'}), 400
     
