@@ -54,7 +54,7 @@ def summarize():
 
     if summary_type == 'insights':
         prompt = "You are a YouTube summarizer. Generate a maximum of five concise bullet points (key insights) of the **key insights** from this transcript. Use emojis at the start of each point. Focus on main ideas.\n\nTranscript: "
-    elif summary_type == 'key_insights':
+    elif summary_type == 'concise':
         prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times\n\nTranscript: "
     elif summary_type == 'detailed':
         prompt = "You are a YouTube summarizer. Generate a detailed, multi-paragraph summary (under 450 words) of this transcript, use proper structure and bullet points covering all main topics and supporting details.\n\nTranscript: "
