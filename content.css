@@ -1,0 +1,303 @@
+/* content.css */
+#yt-summarizer-root {
+  /* ==== CSS VARIABLES (Light Mode Default) ==== */
+  --bg-primary: #fff;
+  --bg-secondary: #f3f4f6;
+  --bg-hover: #eceef0;
+  --bg-active: #e2e5e8;
+  --text-primary: #0f0f0f;
+  --text-secondary: #606060;
+  --text-on-accent: #fff;
+  --border: #dadce0;
+  --accent: #065fd4;
+  --accent-hover: #0552b4;
+  /* Utility for opacity check in loading screen */
+  --bg-primary-rgb: 255, 255, 255;
+
+  /* Base Styles */
+  box-sizing: border-box;
+  font-family: "YouTube Sans", Roboto, Arial, sans-serif;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 17px;
+  overflow: hidden;
+  font-size: 17px; /* Increased from 15px */
+  color: var(--text-primary);
+}
+
+#yt-summarizer-root.dark-mode {
+  /* ==== CSS VARIABLES (Dark Mode) ==== */
+  --bg-primary: #171717;
+  --bg-secondary: #272727;
+  --bg-hover: #3a3a3a;
+  --bg-active: #4d4d4d;
+  --text-primary: #f1f1f1;
+  --text-secondary: #aaa;
+  --text-on-accent: #0f0f0f;
+  --border: #3f3f3f;
+  --accent: #8ab4f8;
+  --accent-hover: #a1c5fb;
+  --bg-primary-rgb: 23, 23, 23;
+}
+
+/* Make all children inherit box-sizing */
+#yt-summarizer-root *,
+#yt-summarizer-root *::before,
+#yt-summarizer-root *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#yt-summarizer-root .panel {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+/* ==== TOP BAR (Tabs & Utils) ==== */
+#yt-summarizer-root .main-tabs {
+  display: flex;
+  padding: 8px 8px 4px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+#yt-summarizer-root .tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+#yt-summarizer-root .tab-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+#yt-summarizer-root .tab-btn.active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+#yt-summarizer-root .tab-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+#yt-summarizer-root .utils {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+#yt-summarizer-root .util-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+#yt-summarizer-root .util-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+#yt-summarizer-root .util-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Theme Toggle Icons */
+#yt-summarizer-root .moon {
+  display: none;
+}
+#yt-summarizer-root .sun {
+  display: block;
+}
+#yt-summarizer-root.dark-mode .moon {
+  display: block;
+}
+#yt-summarizer-root.dark-mode .sun {
+  display: none;
+}
+
+/* ==== CONTENT AREA ==== */
+#yt-summarizer-root .content-wrapper {
+  padding: 17px;
+  position: relative;
+  min-height: 100px; /* Min height for loading spinner */
+}
+
+#yt-summarizer-root .page {
+  display: none;
+}
+#yt-summarizer-root .page.active {
+  display: block;
+}
+
+/* Initial View (Big summarize button) */
+#yt-summarizer-root .initial-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#yt-summarizer-root .btn-primary {
+  width: 100%;
+  padding: 10px 17px;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 20px; /* Pill shape */
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+#yt-summarizer-root .btn-primary:hover {
+  background: var(--accent-hover);
+}
+#yt-summarizer-root .btn-primary svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Summary View */
+#yt-summarizer-root .summary-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#yt-summarizer-root .btn-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+#yt-summarizer-root .filter-btn {
+  flex-grow: 1;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#yt-summarizer-root .filter-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+#yt-summarizer-root .filter-btn.active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+
+/* Content Box (for summary & transcript) */
+#yt-summarizer-root .content-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 17px; /* Increased from 14px */
+  line-height: 1.6; /* Increased from 1.6 */
+  max-height: 450px;
+  overflow-y: auto;
+  white-space: pre-wrap; /* Preserves newlines in transcript and summary output */
+}
+#yt-summarizer-root .content-box p {
+  margin-bottom: 12px;
+}
+#yt-summarizer-root .content-box ul {
+  list-style-position: inside;
+  padding-left: 8px;
+}
+#yt-summarizer-root .content-box li {
+  margin-bottom: 8px;
+}
+
+/* Transcript Specific Styling */
+#yt-summarizer-root #transcript-content {
+  font-family: "Roboto Mono", "Courier New", monospace;
+  font-size: 17px;
+  line-height: 1.6;
+  white-space: normal; /* Changed from pre-wrap for better formatting */
+  word-wrap: break-word;
+}
+
+/* Timestamp styling */
+#yt-summarizer-root #transcript-content .timestamp {
+  font-weight: 700;
+  color: var(--accent);
+  font-family: "Roboto Mono", monospace;
+  display: inline-block;
+  min-width: 50px;
+  margin-right: 8px;
+}
+
+#yt-summarizer-root.dark-mode #transcript-content .timestamp {
+  color: var(--accent);
+}
+
+/* ==== LOADING & ERROR ==== */
+#yt-summarizer-root .loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--bg-primary-rgb), 0.7); /* Use RGB for opacity */
+  z-index: 10;
+  padding: 20px 0;
+}
+
+#yt-summarizer-root .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 8px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#yt-summarizer-root .error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+#yt-summarizer-root.dark-mode .error {
+  background: #3b1e1e;
+  color: #ff8a80;
+}

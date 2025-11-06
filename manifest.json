@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Transcript Summarizer",
+  "version": "1.0",
+  "description": "Extracts YouTube transcripts and sends them to a local backend for summarization.",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["https://www.youtube.com/*", "https://youtu.be/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://youtu.be/*"],
+      "js": ["dist/bundle.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["ui.html"],
+      "matches": ["https://www.youtube.com/*", "https://youtu.be/*"]
+    }
+  ]
+}
