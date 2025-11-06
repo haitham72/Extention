@@ -51,6 +51,8 @@ def summarize():
     
     if not transcript:
         return jsonify({'error': 'No transcript provided'}), 400
+    
+    summary_type = str(summary_type).strip().lower() if summary_type else 'insights'
 
     if summary_type == 'insights':
         prompt = "You are a YouTube summarizer. Generate a single, **concise paragraph** (under 20 words) summarizing this transcript. the main idea to look for is how valuable is this video, is it click bait or superb value of user`s times, use the html tags to make the summary more readable like <h3>Summary</h3>\n\nTranscript: "
