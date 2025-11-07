@@ -1,0 +1,41 @@
+# YouTube Summarizer Extension Privacy Policy
+
+**Effective Date: November 2025**
+
+This Privacy Policy describes how the YouTube Summarizer extension handles information in the Chrome browser environment.
+
+## 1. Data Processing and Purpose
+
+The YouTube Summarizer extension is designed to run primarily on the user's local machine and interacts with a user-hosted Python server running at `http://127.0.0.1:5000`. The extension **does not collect, store, or transmit any user data to the developer** (the individual who created the extension).
+
+The following non-identifiable data is collected and processed solely for the extension's single purpose: generating AI summaries of YouTube videos.
+
+| Data Category | Data Collected | Purpose of Processing |
+| :--- | :--- | :--- |
+| **Website Content** | YouTube Video ID, Video Title, and Transcript Text. | This data is sent to the user's local Python server (`backend.py`) for processing via the Gemini API to generate the requested summary. |
+| **User Activity** | The URL of the active browser tab. | To verify that the user is on a valid YouTube video page before running the summarization logic. |
+
+## 2. Local Storage and Caching
+
+Video transcripts are temporarily stored in a local directory (`video_data_files/`) on the user's local hard drive by the user-hosted Python server (`backend.py`). This is done exclusively for caching purposes to improve performance and prevent repeated API calls. **This cache is not accessible by the developer.**
+
+## 3. Data Sharing and Third Parties
+
+No collected data (including transcripts or video IDs) is shared with any external third parties, except as follows:
+
+* **Google Gemini API:** The transcript text is sent by the user's local server to the Google Gemini API (via the API key configured by the user) for the express purpose of generating the summary.
+
+## 4. Personally Identifiable Information (PII)
+
+**The YouTube Summarizer extension does not collect any Personally Identifiable Information (PII)**, such as names, email addresses, financial details, or authentication credentials.
+
+---
+
+### **2. What to Put in the Form**
+
+By using the policy above, you can confidently stick to the answers I recommended earlier, which avoids the intensive review process associated with PII and Payment data.
+
+* **Privacy Policy URL:** (Insert your new URL here)
+* **Website Content:** **Checked**
+* **User Activity:** **Checked**
+* **PII, Authentication, Financial, Communications, Location:** **Unchecked** (Crucial for fast approval)
