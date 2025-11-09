@@ -1,0 +1,25 @@
+"Transform this research document/analysis into an interactive, single-page HTML report with the following specifications:
+
+**STRUCTURE:**
+- Fixed navigation sidebar with smooth scroll-to-section
+- Hero section with key metrics visualization
+- Content divided into 7-8 thematic sections
+- Each section has: title, summary cards, and insight callouts
+- Footer with attribution
+
+**DESIGN:**
+- Use Tailwind CSS via CDN for styling
+- Color scheme: teal/blue primary, with semantic colors (red for warnings, green for insights)
+- Typography: serif headings (Tiempos), sans-serif body (Inter)
+- Responsive: collapsible sidebar on mobile
+- Interactive: hover effects, smooth scrolling, mobile menu toggle
+
+**FUNCTIONALITY:**
+- Mobile sidebar toggle with click-outside-to-close
+- Anchor link smooth scrolling
+- Section dividers with gradients
+- Code blocks for technical specifications
+- Alert boxes for critical warnings
+
+**CONTENT ORGANIZATION:**
+Map each major research point to a card or list item. Use icons (Font Awesome) for visual markers. Ensure all citations are preserved as clickable links."
